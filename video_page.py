@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from typing import Sequence, Union, List
 import utils
+import time
 
 
 class VideoPage:
@@ -33,11 +34,12 @@ class VideoPage:
         self.wait.until(
             EC.visibility_of_any_elements_located((By.XPATH, xpath)))
         full_description = ''
-        base_element: WebElement = self.driver.find_element_by_xpath(base_xpath)
+        base_element: WebElement = self.driver.find_element_by_xpath(
+            base_xpath)
         for child_element in base_element.find_elements_by_xpath("./*"):
             child_element: WebElement
             tag_name: str = child_element.tag_name
-            if tag_name == "span":
+            if "span" in tag_name:
                 full_description += child_element.text
             if tag_name == "a":
                 if r"hashtag/" not in child_element.get_attribute("href"):
@@ -45,3 +47,12 @@ class VideoPage:
                     url = utils.redirected_url(url)
                     full_description += url
         return full_description
+
+    def click_press_more(self):
+        xpath = '//paper-button[@id="more" and @role="button" and child::yt-formatted-string]'
+        try:
+            btn_element: WebElement = self.wait.until(
+                EC.presence_of_element_located((By.XPATH, xpath)))
+            btn_element.click()
+        except:
+            pass

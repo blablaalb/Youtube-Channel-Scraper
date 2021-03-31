@@ -22,6 +22,7 @@ for url in (urls):
     driver.get(url)
     vp = VideoPage(driver)
     title = vp.get_title()
+    vp.click_press_more()
     description = vp.get_description()
     print(f"{title}\n{description}")
     input("Press any key to continue...")
