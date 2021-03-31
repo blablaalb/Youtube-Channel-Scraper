@@ -44,7 +44,7 @@ with open(f'{channel_name}.csv', 'w', newline='') as f:
         title = vp.get_title()
         vp.click_press_more()
         description = vp.get_description()
-        print(f"{title}\n{description}")
+        print("\n", "-"*25, title, "-"*25, "\n", description, "\n")
         csv_writer.writerow([title, description, url])
 
 driver.quit()
