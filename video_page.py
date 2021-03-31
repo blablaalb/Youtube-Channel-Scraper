@@ -31,8 +31,11 @@ class VideoPage:
         text_subxpath = './/span[contains(@class, "style-scope")]'
         url_subxpath = './/a[@href]'
         xpath = '//div[@id="description"]//span[contains(@class,"style-scope")]'
-        self.wait.until(
-            EC.visibility_of_any_elements_located((By.XPATH, xpath)))
+        try:
+            self.wait.until(
+                EC.visibility_of_any_elements_located((By.XPATH, xpath)))
+        except:
+            pass
         full_description = ''
         base_element: WebElement = self.driver.find_element_by_xpath(
             base_xpath)
@@ -40,12 +43,16 @@ class VideoPage:
             child_element: WebElement
             tag_name: str = child_element.tag_name
             if "span" in tag_name:
-                full_description += child_element.text
+                text : str = child_element.text
+                if not text:
+                    text = "\n"
+                full_description += text
             if tag_name == "a":
                 if r"hashtag/" not in child_element.get_attribute("href"):
                     url = child_element.get_attribute("href")
                     url = utils.redirected_url(url)
                     full_description += url
+        full_description.strip()
         return full_description
 
     def click_press_more(self):
