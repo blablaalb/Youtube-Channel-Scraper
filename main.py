@@ -39,12 +39,15 @@ urls = list(cp.get_urls())
 with open(f'{channel_name}.csv', 'w', newline='') as f:
     csv_writer = csv.writer(f)
     for url in (urls):
-        driver.get(url)
-        vp = VideoPage(driver)
-        title = vp.get_title()
-        vp.click_press_more()
-        description = vp.get_description()
-        print("\n", "-"*25, title, "-"*25, "\n", description, "\n")
-        csv_writer.writerow([title, description, url])
+        try:
+            driver.get(url)
+            vp = VideoPage(driver)
+            title = vp.get_title()
+            vp.click_press_more()
+            description = vp.get_description()
+            print("\n", "-"*25, title, "-"*25, "\n", description, "\n")
+            csv_writer.writerow([title, description, url])
+        except Exception as e:
+            print(f"\033[91m{e}\033[0m")
 
 driver.quit()

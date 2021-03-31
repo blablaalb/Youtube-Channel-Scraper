@@ -31,15 +31,19 @@ class VideoPage:
 
     def get_description(self) -> str:
         try:
-            base_xpath = '//*[@id="description"]/yt-formatted-string'
+            base_xpath = '//div[@id="description"]/yt-formatted-string'
             text_subxpath = './/span[contains(@class, "style-scope")]'
             url_subxpath = './/a[@href]'
-            xpath = '//div[@id="description"]//span[contains(@class,"style-scope")]'
-            self.wait.until(
-                EC.visibility_of_any_elements_located((By.XPATH, xpath)))
             full_description = ''
+
+            self.wait.until(EC.presence_of_element_located(
+                (By.XPATH, base_xpath)))
             base_element: WebElement = self.driver.find_element_by_xpath(
                 base_xpath)
+            try:
+                full_description += base_element.text
+            except:
+                pass
             for child_element in base_element.find_elements_by_xpath("./*"):
                 child_element: WebElement
                 tag_name: str = child_element.tag_name
