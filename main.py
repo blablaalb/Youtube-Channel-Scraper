@@ -6,16 +6,29 @@ from channel_page import ChannelPage
 from video_page import VideoPage
 import csv
 import time
+import sys
 
-url = "https://www.youtube.com/c/OldSchoolCombat/videos"
+
+args = sys.argv
+url = ''
+if len(args) <= 1:
+    while not url:
+        url = input("Please enter url for the channel...")
+else:
+    url = args[1]
+
+
+
 jquery_cdn = "https://code.jquery.com/jquery-3.6.0.js"
-
-options  = selenium.webdriver.ChromeOptions()
+options = selenium.webdriver.ChromeOptions()
 options.add_argument("--mute-audio")
 driver = Chrome(options=options)
 driver.get(url)
 jq = requests.get(jquery_cdn).text
 driver.execute_script(jq)
+videos_btn_element = driver.find_elements_by_xpath('//div[@id="tabsContainer"]/div[@id="tabsContent"]/tp-yt-paper-tab[@role="tab"]')[1].click()
+channel_name = driver.find_element_by_xpath(
+    '//div[contains(@id, "inner-header-container")]/div/ytd-channel-name[@id="channel-name"]/div/div/yt-formatted-string[@id="text" and contains(@class, "ytd-channel-name")]').text
 
 cp = ChannelPage(driver)
 while not cp.near_bottom():
@@ -23,8 +36,8 @@ while not cp.near_bottom():
     time.sleep(0.6)
 
 urls = list(cp.get_urls())
-with open('channel.csv', 'w', newline='') as f:
-    csv_writer  = csv.writer(f)
+with open(f'{channel_name}.csv', 'w', newline='') as f:
+    csv_writer = csv.writer(f)
     for url in (urls):
         driver.get(url)
         vp = VideoPage(driver)
